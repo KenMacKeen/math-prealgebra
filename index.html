@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Math Advantage 2002 · Pre-Algebra</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --panel: #0f1628;
+    --card: #141c35;
+    --border: #1e3a6e;
+    --accent: #00d4ff;
+    --accent2: #7c3aed;
+    --accent3: #f59e0b;
+    --success: #10b981;
+    --danger: #ef4444;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --glow: 0 0 20px rgba(0,212,255,0.3);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Exo 2', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── STARFIELD ── */
+  #stars {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background: radial-gradient(ellipse at 20% 50%, #0d1b3e 0%, #0a0e1a 60%);
+  }
+  .star { position: absolute; border-radius: 50%; background: white; animation: twinkle var(--d) ease-in-out infinite; opacity: 0; }
+  @keyframes twinkle { 0%,100%{opacity:0} 50%{opacity:var(--o)} }
+
+  /* ── SCREENS ── */
+  .screen { display: none; position: relative; z-index: 1; }
+  .screen.active { display: block; }
+
+  /* ── INTRO SCREEN ── */
+  #screen-intro {
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 2rem;
+  }
+  #screen-intro.active { display: flex; }
+
+  .logo-badge {
+    border: 2px solid var(--accent);
+    border-radius: 12px;
+    padding: 0.4rem 1.2rem;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--accent);
+    letter-spacing: 4px;
+    margin-bottom: 2rem;
+    box-shadow: var(--glow);
+    animation: pulse-border 2s ease-in-out infinite;
+  }
+  @keyframes pulse-border { 0%,100%{box-shadow:0 0 10px rgba(0,212,255,0.3)} 50%{box-shadow:0 0 30px rgba(0,212,255,0.7)} }
+
+  .main-title {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    font-weight: 900;
+    line-height: 1;
+    background: linear-gradient(135deg, #00d4ff 0%, #7c3aed 50%, #f59e0b 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
+    animation: shimmer 3s linear infinite;
+  }
+  @keyframes shimmer { 0%{filter:hue-rotate(0deg)} 100%{filter:hue-rotate(360deg)} }
+
+  .sub-title {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(1rem, 3vw, 1.8rem);
+    color: var(--accent3);
+    letter-spacing: 3px;
+    margin-bottom: 3rem;
+  }
+
+  .intro-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2.5rem;
+    max-width: 500px;
+    width: 100%;
+    margin-bottom: 2rem;
+  }
+
+  label.field-label {
+    display: block;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+  }
+
+  input[type="text"] {
+    width: 100%; padding: 0.8rem 1rem;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text);
+    font-family: 'Exo 2', sans-serif; font-size: 1rem;
+    outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  input[type="text"]:focus { border-color: var(--accent); box-shadow: var(--glow); }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    border: none; color: white;
+    font-family: 'Orbitron', monospace; font-weight: 700;
+    font-size: 0.9rem; letter-spacing: 2px;
+    padding: 1rem 3rem; border-radius: 8px;
+    cursor: pointer; transition: transform 0.15s, box-shadow 0.15s;
+    margin-top: 1.5rem; width: 100%;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(124,58,237,0.5); }
+  .btn-primary:active { transform: translateY(0); }
+
+  /* ── MODULES SCREEN ── */
+  #screen-modules { min-height: 100vh; padding: 2rem; }
+  #screen-modules.active { display: block; }
+
+  .top-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 3rem; padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap; gap: 1rem;
+  }
+  .top-bar-title {
+    font-family: 'Orbitron', monospace; font-size: 1rem;
+    color: var(--accent); letter-spacing: 2px;
+  }
+  .user-badge {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 20px; padding: 0.4rem 1rem;
+    font-size: 0.85rem; color: var(--muted);
+  }
+  .user-badge span { color: var(--accent3); font-weight: 600; }
+
+  .section-heading {
+    font-family: 'Orbitron', monospace; font-size: 0.7rem;
+    letter-spacing: 4px; color: var(--muted); text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+
+  .modules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem; margin-bottom: 3rem;
+  }
+
+  .module-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px; padding: 1.5rem;
+    cursor: pointer; transition: all 0.2s;
+    position: relative; overflow: hidden;
+  }
+  .module-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--accent-color, var(--accent));
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.3s;
+  }
+  .module-card:hover::before { transform: scaleX(1); }
+  .module-card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0,0,0,0.4); }
+
+  .module-icon { font-size: 2rem; margin-bottom: 0.8rem; }
+  .module-num { font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; color: var(--muted); margin-bottom: 0.3rem; }
+  .module-name { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .module-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.5; margin-bottom: 1rem; }
+  .module-progress-bar { height: 4px; background: var(--card); border-radius: 2px; overflow: hidden; }
+  .module-progress-fill { height: 100%; background: var(--accent-color, var(--accent)); border-radius: 2px; transition: width 0.5s; }
+  .module-progress-label { font-size: 0.72rem; color: var(--muted); margin-top: 0.4rem; }
+
+  /* ── CHAPTER SCREEN ── */
+  #screen-chapters { min-height: 100vh; padding: 2rem; }
+  #screen-chapters.active { display: block; }
+
+  .back-btn {
+    background: none; border: 1px solid var(--border); color: var(--muted);
+    font-family: 'Exo 2', sans-serif; padding: 0.5rem 1rem;
+    border-radius: 6px; cursor: pointer; font-size: 0.85rem;
+    transition: all 0.2s; margin-bottom: 2rem; display: inline-flex; align-items: center; gap: 0.5rem;
+  }
+  .back-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .chapter-header {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 16px; padding: 2rem; margin-bottom: 2rem;
+    display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;
+  }
+  .chapter-icon-big { font-size: 3.5rem; }
+  .chapter-title-area h2 { font-family: 'Orbitron', monospace; font-size: 1.3rem; margin-bottom: 0.3rem; }
+  .chapter-title-area p { color: var(--muted); font-size: 0.9rem; }
+
+  .chapters-list { display: flex; flex-direction: column; gap: 1rem; }
+
+  .chapter-item {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.2rem 1.5rem;
+    display: flex; align-items: center; gap: 1rem;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .chapter-item:hover { border-color: var(--accent); background: var(--card); }
+  .chapter-item.locked { opacity: 0.5; cursor: not-allowed; }
+  .chapter-item.completed { border-color: var(--success); }
+
+  .chapter-num-badge {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--card); border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Orbitron', monospace; font-size: 0.8rem; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .chapter-item.completed .chapter-num-badge { background: var(--success); border-color: var(--success); color: white; }
+  .chapter-info { flex: 1; }
+  .chapter-info h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.2rem; }
+  .chapter-info p { font-size: 0.8rem; color: var(--muted); }
+  .chapter-status { font-size: 0.75rem; color: var(--muted); }
+  .chapter-item.completed .chapter-status { color: var(--success); }
+
+  /* ── LESSON SCREEN ── */
+  #screen-lesson { min-height: 100vh; padding: 2rem; max-width: 900px; margin: 0 auto; }
+  #screen-lesson.active { display: block; }
+
+  .lesson-breadcrumb { font-size: 0.8rem; color: var(--muted); margin-bottom: 1.5rem; }
+  .lesson-breadcrumb span { color: var(--accent); }
+
+  .lesson-card {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 20px; padding: 2.5rem; margin-bottom: 2rem;
+  }
+
+  .lesson-tag {
+    display: inline-block; background: rgba(0,212,255,0.1);
+    border: 1px solid rgba(0,212,255,0.3); border-radius: 20px;
+    padding: 0.2rem 0.8rem; font-size: 0.7rem; color: var(--accent);
+    letter-spacing: 2px; text-transform: uppercase; margin-bottom: 1rem;
+  }
+
+  .lesson-card h2 { font-family: 'Orbitron', monospace; font-size: 1.5rem; margin-bottom: 1.5rem; }
+
+  .lesson-body { font-size: 1rem; line-height: 1.8; color: #cbd5e1; }
+  .lesson-body p { margin-bottom: 1rem; }
+  .lesson-body strong { color: var(--accent3); }
+
+  .concept-box {
+    background: var(--card); border-left: 4px solid var(--accent);
+    border-radius: 0 8px 8px 0; padding: 1rem 1.5rem;
+    margin: 1.5rem 0; font-size: 0.95rem;
+  }
+  .concept-box .label { font-size: 0.7rem; letter-spacing: 2px; color: var(--accent); margin-bottom: 0.3rem; }
+
+  .example-box {
+    background: rgba(124,58,237,0.1); border: 1px solid rgba(124,58,237,0.3);
+    border-radius: 8px; padding: 1.2rem 1.5rem; margin: 1.5rem 0;
+  }
+  .example-box .label { font-size: 0.7rem; letter-spacing: 2px; color: var(--accent2); margin-bottom: 0.5rem; }
+  .math-line {
+    font-family: 'Share Tech Mono', monospace; font-size: 1.1rem;
+    color: var(--accent3); line-height: 2; display: block;
+  }
+
+  .step-box { margin: 1.5rem 0; }
+  .step-box .step {
+    display: flex; gap: 1rem; margin-bottom: 0.8rem; align-items: flex-start;
+  }
+  .step-num {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--accent2); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; font-weight: 700; flex-shrink: 0; margin-top: 2px;
+  }
+  .step-text { font-size: 0.92rem; line-height: 1.6; color: #cbd5e1; }
+
+  .continue-btn {
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    border: none; color: white;
+    font-family: 'Orbitron', monospace; font-weight: 700;
+    font-size: 0.85rem; letter-spacing: 2px;
+    padding: 0.9rem 2.5rem; border-radius: 8px;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .continue-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(124,58,237,0.5); }
+
+  /* ── QUIZ SCREEN ── */
+  #screen-quiz { min-height: 100vh; padding: 2rem; max-width: 800px; margin: 0 auto; }
+  #screen-quiz.active { display: block; }
+
+  .quiz-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;
+  }
+  .quiz-progress-text { font-family: 'Share Tech Mono', monospace; font-size: 0.85rem; color: var(--muted); }
+  .quiz-progress-track { height: 6px; background: var(--card); border-radius: 3px; overflow: hidden; margin-bottom: 2rem; }
+  .quiz-progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent2), var(--accent)); border-radius: 3px; transition: width 0.4s; }
+
+  .question-card {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 20px; padding: 2.5rem; margin-bottom: 1.5rem;
+  }
+  .question-num { font-size: 0.7rem; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin-bottom: 1rem; }
+  .question-text { font-size: 1.15rem; font-weight: 600; line-height: 1.6; margin-bottom: 0.5rem; }
+  .question-math { font-family: 'Share Tech Mono', monospace; font-size: 1.4rem; color: var(--accent3); margin: 1rem 0; }
+
+  .answers-grid { display: flex; flex-direction: column; gap: 0.75rem; }
+
+  .answer-btn {
+    background: var(--card); border: 2px solid var(--border);
+    border-radius: 10px; padding: 1rem 1.5rem;
+    text-align: left; cursor: pointer; transition: all 0.2s;
+    display: flex; align-items: center; gap: 1rem;
+    font-family: 'Exo 2', sans-serif; font-size: 0.95rem; color: var(--text);
+  }
+  .answer-btn:hover:not(:disabled) { border-color: var(--accent); background: rgba(0,212,255,0.05); }
+  .answer-label {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--panel); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Orbitron', monospace; font-size: 0.75rem; font-weight: 700;
+    flex-shrink: 0; transition: all 0.2s;
+  }
+  .answer-btn:hover:not(:disabled) .answer-label { background: var(--accent2); border-color: var(--accent2); color: white; }
+  .answer-btn.correct { border-color: var(--success); background: rgba(16,185,129,0.1); }
+  .answer-btn.correct .answer-label { background: var(--success); border-color: var(--success); color: white; }
+  .answer-btn.wrong { border-color: var(--danger); background: rgba(239,68,68,0.1); }
+  .answer-btn.wrong .answer-label { background: var(--danger); border-color: var(--danger); color: white; }
+  .answer-btn:disabled { cursor: default; }
+
+  .feedback-box {
+    border-radius: 10px; padding: 1rem 1.5rem;
+    font-size: 0.9rem; line-height: 1.5; margin-top: 1rem;
+    display: none;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-box.correct { background: rgba(16,185,129,0.1); border: 1px solid var(--success); color: #6ee7b7; }
+  .feedback-box.wrong { background: rgba(239,68,68,0.1); border: 1px solid var(--danger); color: #fca5a5; }
+
+  .next-btn {
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    border: none; color: white;
+    font-family: 'Orbitron', monospace; font-weight: 700;
+    font-size: 0.85rem; letter-spacing: 2px;
+    padding: 0.9rem 2.5rem; border-radius: 8px;
+    cursor: pointer; transition: all 0.15s;
+    display: none; margin-top: 1.5rem;
+  }
+  .next-btn.show { display: inline-block; }
+  .next-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(124,58,237,0.5); }
+
+  /* ── RESULTS SCREEN ── */
+  #screen-results { min-height: 100vh; padding: 2rem; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  #screen-results.active { display: flex; }
+
+  .score-ring {
+    width: 160px; height: 160px;
+    border-radius: 50%; margin: 0 auto 2rem;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    border: 4px solid var(--accent);
+    box-shadow: 0 0 40px rgba(0,212,255,0.3);
+    position: relative;
+  }
+  .score-pct { font-family: 'Orbitron', monospace; font-size: 2.5rem; font-weight: 900; color: var(--accent); }
+  .score-label { font-size: 0.7rem; letter-spacing: 2px; color: var(--muted); }
+
+  .results-title { font-family: 'Orbitron', monospace; font-size: 1.8rem; margin-bottom: 0.5rem; }
+  .results-sub { color: var(--muted); margin-bottom: 2rem; }
+
+  .results-card {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 16px; padding: 2rem; max-width: 480px; width: 100%; margin-bottom: 2rem;
+  }
+  .results-stat { display: flex; justify-content: space-between; padding: 0.6rem 0; border-bottom: 1px solid var(--border); }
+  .results-stat:last-child { border-bottom: none; }
+  .results-stat .key { color: var(--muted); font-size: 0.9rem; }
+  .results-stat .val { font-weight: 700; }
+  .val.good { color: var(--success); }
+  .val.bad { color: var(--danger); }
+
+  .btn-row { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+
+  .btn-secondary {
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text); font-family: 'Orbitron', monospace;
+    font-size: 0.8rem; letter-spacing: 1px;
+    padding: 0.8rem 1.8rem; border-radius: 8px;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── REPORT CARD ── */
+  #screen-report { min-height: 100vh; padding: 2rem; max-width: 800px; margin: 0 auto; }
+  #screen-report.active { display: block; }
+
+  .report-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+  .report-table th {
+    background: var(--card); padding: 0.8rem 1rem;
+    text-align: left; font-size: 0.75rem; letter-spacing: 2px;
+    color: var(--muted); text-transform: uppercase; border-bottom: 1px solid var(--border);
+  }
+  .report-table td { padding: 0.8rem 1rem; border-bottom: 1px solid rgba(30,58,110,0.3); font-size: 0.9rem; }
+  .report-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .grade-badge {
+    display: inline-block; padding: 0.2rem 0.6rem; border-radius: 4px;
+    font-family: 'Share Tech Mono', monospace; font-size: 0.85rem; font-weight: 700;
+  }
+  .grade-A { background: rgba(16,185,129,0.15); color: var(--success); }
+  .grade-B { background: rgba(0,212,255,0.1); color: var(--accent); }
+  .grade-C { background: rgba(245,158,11,0.15); color: var(--accent3); }
+  .grade-F { background: rgba(239,68,68,0.1); color: var(--danger); }
+
+  /* NAV */
+  .side-nav {
+    position: fixed; bottom: 2rem; right: 2rem; z-index: 100;
+    display: flex; flex-direction: column; gap: 0.5rem;
+  }
+  .nav-btn {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--panel); border: 1px solid var(--border);
+    color: var(--muted); font-size: 1.1rem;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .nav-btn:hover { border-color: var(--accent); color: var(--accent); box-shadow: var(--glow); }
+
+  /* TOAST */
+  #toast {
+    position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100px);
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 0.8rem 1.5rem;
+    font-size: 0.9rem; transition: transform 0.3s; z-index: 999;
+    pointer-events: none;
+  }
+  #toast.show { transform: translateX(-50%) translateY(0); }
+
+  @media(max-width:600px) {
+    .lesson-card, .question-card { padding: 1.5rem; }
+    .module-card { padding: 1.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="stars"></canvas>
+
+<!-- ────────────────────────────────────────
+     INTRO SCREEN
+──────────────────────────────────────── -->
+<div id="screen-intro" class="screen active">
+  <div class="logo-badge">ENCORE SOFTWARE · ACES RESEARCH INC.</div>
+  <h1 class="main-title">MATH<br>ADVANTAGE</h1>
+  <p class="sub-title">PRE-ALGEBRA · 2002</p>
+  <div class="intro-card">
+    <label class="field-label">Enter Your Name</label>
+    <input type="text" id="student-name" placeholder="Student Name" maxlength="30" />
+    <button class="btn-primary" onclick="startApp()">▶ LAUNCH PROGRAM</button>
+  </div>
+  <p style="color:var(--muted);font-size:0.8rem;">Web Edition · All modules unlocked</p>
+</div>
+
+<!-- ────────────────────────────────────────
+     MODULES SCREEN
+──────────────────────────────────────── -->
+<div id="screen-modules" class="screen">
+  <div class="top-bar">
+    <div class="top-bar-title">★ MATH ADVANTAGE · PRE-ALGEBRA</div>
+    <div class="user-badge">Student: <span id="display-name">—</span></div>
+    <button class="nav-btn" onclick="showReport()" style="position:static;width:auto;border-radius:8px;padding:0 1rem;font-size:0.8rem;letter-spacing:1px;font-family:'Orbitron',monospace;" title="Report Card">📋 REPORT CARD</button>
+  </div>
+  <p class="section-heading">// SELECT A MODULE TO BEGIN</p>
+  <div class="modules-grid" id="modules-grid"></div>
+</div>
+
+<!-- ────────────────────────────────────────
+     CHAPTERS SCREEN
+──────────────────────────────────────── -->
+<div id="screen-chapters" class="screen">
+  <div style="max-width:700px;margin:0 auto;padding-top:1rem;">
+    <button class="back-btn" onclick="showScreen('modules')">← Back to Modules</button>
+    <div class="chapter-header" id="chapter-header"></div>
+    <p class="section-heading">// CHAPTERS</p>
+    <div class="chapters-list" id="chapters-list"></div>
+  </div>
+</div>
+
+<!-- ────────────────────────────────────────
+     LESSON SCREEN
+──────────────────────────────────────── -->
+<div id="screen-lesson" class="screen">
+  <div class="lesson-breadcrumb" id="lesson-breadcrumb"></div>
+  <div id="lesson-content"></div>
+  <button class="continue-btn" id="lesson-continue-btn" onclick="startQuiz()">START QUIZ →</button>
+</div>
+
+<!-- ────────────────────────────────────────
+     QUIZ SCREEN
+──────────────────────────────────────── -->
+<div id="screen-quiz" class="screen">
+  <div class="quiz-header">
+    <div>
+      <div style="font-family:'Orbitron',monospace;font-size:0.85rem;color:var(--accent);margin-bottom:0.2rem" id="quiz-chapter-label"></div>
+      <div class="quiz-progress-text" id="quiz-progress-text"></div>
+    </div>
+    <div style="font-family:'Share Tech Mono',monospace;font-size:1.2rem;color:var(--accent3)" id="quiz-score-live"></div>
+  </div>
+  <div class="quiz-progress-track"><div class="quiz-progress-fill" id="quiz-progress-fill"></div></div>
+  <div id="quiz-question-area"></div>
+</div>
+
+<!-- ────────────────────────────────────────
+     RESULTS SCREEN
+──────────────────────────────────────── -->
+<div id="screen-results" class="screen">
+  <div id="results-content"></div>
+</div>
+
+<!-- ────────────────────────────────────────
+     REPORT CARD SCREEN
+──────────────────────────────────────── -->
+<div id="screen-report" class="screen">
+  <button class="back-btn" onclick="showScreen('modules')">← Back to Modules</button>
+  <h2 style="font-family:'Orbitron',monospace;font-size:1.2rem;margin-bottom:0.5rem;">📋 REPORT CARD</h2>
+  <p style="color:var(--muted);font-size:0.85rem;margin-bottom:2rem;">Student: <span id="report-student-name" style="color:var(--accent3)"></span></p>
+  <div id="report-content"></div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ────────────────────────────────────────
+//  STARFIELD
+// ────────────────────────────────────────
+(function(){
+  const c = document.getElementById('stars');
+  const ctx = c.getContext('2d');
+  c.width = window.innerWidth; c.height = window.innerHeight;
+  for(let i=0;i<150;i++){
+    const x=Math.random()*c.width, y=Math.random()*c.height;
+    const r=Math.random()*1.5;
+    ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(255,255,255,${Math.random()*0.6+0.1})`; ctx.fill();
+  }
+})();
+
+// ────────────────────────────────────────
+//  DATA: MODULES & CHAPTERS
+// ────────────────────────────────────────
+const MODULES = [
+  {
+    id:'numbers', icon:'🔢', name:'Real Numbers', color:'#00d4ff',
+    desc:'Integers, fractions, decimals, and the number line.',
+    chapters:[
+      { title:'Integers & Absolute Value', topics:'What are integers? Positive, negative, zero. Absolute value on the number line.',
+        content: `<p>An <strong>integer</strong> is any whole number — positive, negative, or zero. The set of integers looks like:</p>
+        <div class="concept-box"><div class="label">DEFINITION</div>… −4, −3, −2, −1, 0, 1, 2, 3, 4 …</div>
+        <p>The <strong>absolute value</strong> of a number is its distance from zero on the number line. Distance is always positive!</p>
+        <div class="example-box"><div class="label">EXAMPLES</div>
+          <code class="math-line">|−7| = 7</code>
+          <code class="math-line">|+5| = 5</code>
+          <code class="math-line">|0| = 0</code>
+        </div>
+        <p>Think of absolute value as the "size" of a number, ignoring its sign.</p>`,
+        questions:[
+          {q:'What is the absolute value of −12?', a:['12','−12','0','6'], correct:0, explanation:'|−12| = 12. Absolute value is always the distance from zero — always non-negative.'},
+          {q:'Which list is in order from least to greatest?', a:['−5, −2, 0, 3','3, 0, −2, −5','−5, −2, 3, 0','0, −2, −5, 3'], correct:0, explanation:'On the number line, −5 < −2 < 0 < 3.'},
+          {q:'What is |0|?', a:['0','1','−1','Undefined'], correct:0, explanation:'Zero is exactly at the origin, so its distance from zero is 0.'},
+          {q:'If |x| = 9, what are the possible values of x?', a:['9 or −9','9 only','−9 only','0'], correct:0, explanation:'Two numbers have absolute value 9: +9 and −9, since both are 9 units from zero.'},
+          {q:'Which has the greater absolute value: −15 or 8?', a:['−15','8','They are equal','Cannot tell'], correct:0, explanation:'|−15| = 15 and |8| = 8. Since 15 > 8, −15 has the greater absolute value.'},
+        ]
+      },
+      { title:'Fractions & Decimals', topics:'Equivalent fractions, converting between forms, comparing.',
+        content:`<p>A <strong>fraction</strong> represents part of a whole. The top number is the <strong>numerator</strong>; the bottom is the <strong>denominator</strong>.</p>
+        <div class="step-box">
+          <div class="step"><div class="step-num">1</div><div class="step-text"><strong>To convert a fraction to a decimal:</strong> divide the numerator by the denominator.<br><em>Example: 3/4 = 3 ÷ 4 = 0.75</em></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text"><strong>To convert a decimal to a fraction:</strong> write the decimal over its place value and simplify.<br><em>Example: 0.6 = 6/10 = 3/5</em></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text"><strong>To compare fractions:</strong> convert to a common denominator or to decimals.</div></div>
+        </div>
+        <div class="concept-box"><div class="label">KEY RULE</div>Multiplying or dividing both numerator and denominator by the same non-zero number produces an <strong>equivalent fraction</strong>.</div>`,
+        questions:[
+          {q:'Convert 3/5 to a decimal.', a:['0.6','0.3','0.35','0.53'], correct:0, explanation:'3 ÷ 5 = 0.6. You can verify: 0.6 × 5 = 3 ✓'},
+          {q:'Which fraction is equivalent to 4/6?', a:['2/3','3/4','1/2','4/5'], correct:0, explanation:'4/6 ÷ (2/2) = 2/3. Both the numerator and denominator were divided by 2.'},
+          {q:'Which is greater: 5/8 or 3/5?', a:['5/8','3/5','They are equal','Cannot determine'], correct:0, explanation:'5/8 = 0.625 and 3/5 = 0.6. Since 0.625 > 0.6, 5/8 is greater.'},
+          {q:'Convert 0.25 to a fraction in simplest form.', a:['1/4','25/10','1/25','5/4'], correct:0, explanation:'0.25 = 25/100 = 1/4 after dividing numerator and denominator by 25.'},
+          {q:'What is 7/8 as a decimal?', a:['0.875','0.78','0.87','0.785'], correct:0, explanation:'7 ÷ 8 = 0.875. Check: 0.875 × 8 = 7 ✓'},
+        ]
+      },
+      { title:'Order of Operations (PEMDAS)', topics:'Applying the correct sequence for arithmetic expressions.',
+        content:`<p>When an expression has multiple operations, you must follow the correct <strong>order of operations</strong> — often remembered as <strong>PEMDAS</strong>:</p>
+        <div class="concept-box"><div class="label">PEMDAS</div>
+          <strong>P</strong>arentheses → <strong>E</strong>xponents → <strong>M</strong>ultiplication / <strong>D</strong>ivision (left to right) → <strong>A</strong>ddition / <strong>S</strong>ubtraction (left to right)
+        </div>
+        <div class="example-box"><div class="label">WORKED EXAMPLE</div>
+          <code class="math-line">3 + 4 × 2² − (1 + 3)</code>
+          <code class="math-line">= 3 + 4 × 4 − 4         → parentheses &amp; exponent</code>
+          <code class="math-line">= 3 + 16 − 4            → multiplication</code>
+          <code class="math-line">= 15                    → left-to-right</code>
+        </div>`,
+        questions:[
+          {q:'Evaluate: 2 + 3 × 4', a:['14','20','24','10'], correct:0, explanation:'Multiply first: 3 × 4 = 12, then add: 2 + 12 = 14.'},
+          {q:'Evaluate: (5 + 3) × 2', a:['16','11','13','10'], correct:0, explanation:'Parentheses first: 5 + 3 = 8, then multiply: 8 × 2 = 16.'},
+          {q:'Evaluate: 10 − 2² + 1', a:['7','1','11','5'], correct:0, explanation:'Exponent first: 2² = 4. Then left-to-right: 10 − 4 + 1 = 7.'},
+          {q:'Which expression equals 1?', a:['(8 − 6) ÷ 2','8 − 6 ÷ 2','8 ÷ (6 − 2)','(8 + 6) ÷ 2'], correct:0, explanation:'(8 − 6) ÷ 2 = 2 ÷ 2 = 1. Parentheses change the result!'},
+          {q:'Evaluate: 3² − (4 − 1) × 2', a:['3','12','15','0'], correct:0, explanation:'Parentheses: 4 − 1 = 3. Exponent: 3² = 9. Multiply: 3 × 2 = 6. Subtract: 9 − 6 = 3.'},
+        ]
+      }
+    ]
+  },
+  {
+    id:'algebra', icon:'⚡', name:'Algebraic Thinking', color:'#7c3aed',
+    desc:'Variables, expressions, equations, and inequalities.',
+    chapters:[
+      { title:'Variables & Expressions', topics:'Writing and evaluating algebraic expressions.',
+        content:`<p>A <strong>variable</strong> is a letter that represents an unknown number. An <strong>algebraic expression</strong> combines variables, numbers, and operations.</p>
+        <div class="concept-box"><div class="label">VOCABULARY</div>
+          <strong>Term</strong>: a single number, variable, or product (e.g., 3x, 7, −2y²)<br>
+          <strong>Coefficient</strong>: the number multiplied by a variable (in 5x, the coefficient is 5)<br>
+          <strong>Constant</strong>: a term with no variable (e.g., 7)
+        </div>
+        <p>To <strong>evaluate</strong> an expression, substitute the given value for each variable and simplify.</p>
+        <div class="example-box"><div class="label">EXAMPLE — Evaluate 3x + 5 when x = 4</div>
+          <code class="math-line">3(4) + 5 = 12 + 5 = 17</code>
+        </div>`,
+        questions:[
+          {q:'Evaluate 2x − 3 when x = 7.', a:['11','17','4','10'], correct:0, explanation:'Substitute x = 7: 2(7) − 3 = 14 − 3 = 11.'},
+          {q:'What is the coefficient of y in the expression 8y + 2?', a:['8','2','y','8y'], correct:0, explanation:'The coefficient is the number multiplying the variable. In 8y, it is 8.'},
+          {q:'Evaluate a² + b when a = 3 and b = 5.', a:['14','11','30','19'], correct:0, explanation:'a² = 3² = 9; then 9 + 5 = 14.'},
+          {q:'Which expression means "5 more than twice a number n"?', a:['2n + 5','5n + 2','2 + 5n','5 + n²'], correct:0, explanation:'"Twice a number n" = 2n. "5 more than" = + 5. So: 2n + 5.'},
+          {q:'Evaluate 4(m − 2) when m = 6.', a:['16','8','24','20'], correct:0, explanation:'Substitute m = 6: 4(6 − 2) = 4(4) = 16.'},
+        ]
+      },
+      { title:'Solving One-Step Equations', topics:'Using inverse operations to find the value of a variable.',
+        content:`<p>An <strong>equation</strong> is a statement that two expressions are equal. To <strong>solve</strong> means to find what value of the variable makes the equation true.</p>
+        <p>The key idea: whatever you do to one side of the equation, <strong>do the same to the other side</strong>. Use <strong>inverse (opposite) operations</strong> to isolate the variable.</p>
+        <div class="step-box">
+          <div class="step"><div class="step-num">1</div><div class="step-text">Identify the operation being done to the variable.</div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text">Apply the inverse operation to both sides.</div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text">Simplify and check your answer.</div></div>
+        </div>
+        <div class="example-box"><div class="label">EXAMPLE: x + 9 = 15</div>
+          <code class="math-line">x + 9 − 9 = 15 − 9   → subtract 9 both sides</code>
+          <code class="math-line">x = 6</code>
+        </div>`,
+        questions:[
+          {q:'Solve: x + 7 = 12', a:['5','19','7','-5'], correct:0, explanation:'Subtract 7 from both sides: x = 12 − 7 = 5.'},
+          {q:'Solve: 3y = 24', a:['8','21','72','3'], correct:0, explanation:'Divide both sides by 3: y = 24 ÷ 3 = 8.'},
+          {q:'Solve: n − 4 = 11', a:['15','7','-7','44'], correct:0, explanation:'Add 4 to both sides: n = 11 + 4 = 15.'},
+          {q:'Solve: m ÷ 5 = 6', a:['30','1','11','25'], correct:0, explanation:'Multiply both sides by 5: m = 6 × 5 = 30.'},
+          {q:'If 2x = 18, what is x + 3?', a:['12','9','21','6'], correct:0, explanation:'Solve: x = 18 ÷ 2 = 9. Then x + 3 = 9 + 3 = 12.'},
+        ]
+      },
+      { title:'Inequalities', topics:'Writing and graphing simple inequalities.',
+        content:`<p>An <strong>inequality</strong> compares two expressions using one of these symbols:</p>
+        <div class="concept-box"><div class="label">SYMBOLS</div>
+          <strong>&lt;</strong> less than &nbsp;·&nbsp; <strong>&gt;</strong> greater than &nbsp;·&nbsp; <strong>≤</strong> less than or equal &nbsp;·&nbsp; <strong>≥</strong> greater than or equal
+        </div>
+        <p>Solving an inequality is like solving an equation, with one important rule:</p>
+        <div class="example-box"><div class="label">CRITICAL RULE</div>
+          <code class="math-line">If you multiply or divide both sides by a NEGATIVE number,</code>
+          <code class="math-line">you must FLIP the inequality symbol!</code>
+        </div>
+        <div class="example-box"><div class="label">EXAMPLE: Solve −2x &lt; 8</div>
+          <code class="math-line">÷ (−2) both sides: x &gt; −4   → symbol flips!</code>
+        </div>`,
+        questions:[
+          {q:'Which value satisfies x > 5?', a:['7','4','5','3'], correct:0, explanation:'We need x strictly greater than 5. Only 7 > 5.'},
+          {q:'Solve: x + 3 < 10', a:['x < 7','x < 13','x > 7','x > 13'], correct:0, explanation:'Subtract 3 from both sides: x < 10 − 3 = 7.'},
+          {q:'Solve: −3x ≥ 12', a:['x ≤ −4','x ≥ −4','x ≤ 4','x ≥ 4'], correct:0, explanation:'Divide by −3 and flip the symbol: x ≤ 12 ÷ (−3) = −4.'},
+          {q:'A number n satisfies n ≤ 6. Which could be n?', a:['6','7','8','9'], correct:0, explanation:'n ≤ 6 means n can equal 6. All values 6 and below are solutions.'},
+          {q:'Which symbol makes −5 __ −2 true?', a:['<','>', '=','≥'], correct:0, explanation:'On the number line, −5 is to the left of −2, so −5 < −2.'},
+        ]
+      }
+    ]
+  },
+  {
+    id:'ratios', icon:'📐', name:'Ratios & Proportions', color:'#f59e0b',
+    desc:'Ratios, rates, proportions, and percents.',
+    chapters:[
+      { title:'Ratios & Rates', topics:'Writing ratios, unit rates, and comparing rates.',
+        content:`<p>A <strong>ratio</strong> compares two quantities. It can be written three ways: <em>3 to 4</em>, <em>3:4</em>, or <em>3/4</em>.</p>
+        <p>A <strong>rate</strong> is a ratio that compares two different units (e.g., miles per hour, dollars per pound).</p>
+        <p>A <strong>unit rate</strong> has a denominator of 1. To find it, divide:</p>
+        <div class="example-box"><div class="label">EXAMPLE</div>
+          <code class="math-line">A car travels 150 miles in 3 hours.</code>
+          <code class="math-line">Unit rate = 150 ÷ 3 = 50 miles per hour</code>
+        </div>`,
+        questions:[
+          {q:'A bag has 6 red and 4 blue marbles. What is the ratio of red to blue?', a:['3:2','2:3','6:10','4:6'], correct:0, explanation:'6 red to 4 blue = 6:4, which simplifies to 3:2.'},
+          {q:'A car travels 240 miles in 4 hours. What is the unit rate?', a:['60 mph','40 mph','80 mph','96 mph'], correct:0, explanation:'240 ÷ 4 = 60 miles per hour.'},
+          {q:'Which is a better deal: 12 oz for $3 or 20 oz for $4?', a:['20 oz for $4','12 oz for $3','Same value','Cannot tell'], correct:0, explanation:'$3/12oz = $0.25/oz. $4/20oz = $0.20/oz. The 20 oz is cheaper per ounce.'},
+          {q:'The ratio of boys to girls is 3:5. If there are 24 boys, how many girls are there?', a:['40','30','15','45'], correct:0, explanation:'3 parts = 24, so 1 part = 8. Girls = 5 × 8 = 40.'},
+          {q:'A recipe uses 2 cups flour for 3 dozen cookies. How much flour for 9 dozen?', a:['6 cups','4 cups','3 cups','9 cups'], correct:0, explanation:'9 ÷ 3 = 3 times as many cookies. 2 × 3 = 6 cups of flour.'},
+        ]
+      },
+      { title:'Proportions', topics:'Setting up and solving proportions using cross-multiplication.',
+        content:`<p>A <strong>proportion</strong> states that two ratios are equal: a/b = c/d.</p>
+        <p>To solve a proportion, use <strong>cross-multiplication</strong>: multiply the means and extremes.</p>
+        <div class="example-box"><div class="label">EXAMPLE: Solve x/6 = 5/15</div>
+          <code class="math-line">Cross multiply: 15x = 30</code>
+          <code class="math-line">x = 30 ÷ 15 = 2</code>
+        </div>
+        <div class="concept-box"><div class="label">CROSS-MULTIPLICATION RULE</div>
+          If a/b = c/d, then <strong>ad = bc</strong>
+        </div>`,
+        questions:[
+          {q:'Solve the proportion: x/4 = 3/12', a:['1','3','4','9'], correct:0, explanation:'Cross multiply: 12x = 12. Divide: x = 1. Check: 1/4 = 3/12 = 0.25 ✓'},
+          {q:'If 5 items cost $20, how much do 8 items cost?', a:['$32','$25','$40','$16'], correct:0, explanation:'Set up: 5/20 = 8/x. Cross multiply: 5x = 160. x = $32.'},
+          {q:'Solve: 3/7 = 9/x', a:['21','3','63','27'], correct:0, explanation:'Cross multiply: 3x = 63. x = 21. Check: 3/7 = 9/21 ✓'},
+          {q:'A map uses a scale of 1 in = 50 miles. How far is 3.5 inches on the map?', a:['175 miles','150 miles','200 miles','35 miles'], correct:0, explanation:'1/50 = 3.5/x → x = 3.5 × 50 = 175 miles.'},
+          {q:'If 2 gallons of paint cover 800 sq ft, how many gallons for 2400 sq ft?', a:['6 gallons','4 gallons','8 gallons','12 gallons'], correct:0, explanation:'2/800 = x/2400 → 800x = 4800 → x = 6 gallons.'},
+        ]
+      },
+      { title:'Percents', topics:'Converting percents, finding percentages, percent change.',
+        content:`<p>A <strong>percent</strong> means "per hundred." 45% = 45/100 = 0.45.</p>
+        <div class="step-box">
+          <div class="step"><div class="step-num">1</div><div class="step-text"><strong>Percent of a number:</strong> convert % to decimal × whole number.<br><em>40% of 80 = 0.40 × 80 = 32</em></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-text"><strong>Percent change:</strong> (new − old) / old × 100%<br><em>From $20 to $25: 5/20 × 100 = 25% increase</em></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-text"><strong>Finding the whole:</strong> part ÷ percent = whole<br><em>18 is 30% of what number? 18 ÷ 0.3 = 60</em></div></div>
+        </div>`,
+        questions:[
+          {q:'What is 25% of 80?', a:['20','25','30','40'], correct:0, explanation:'0.25 × 80 = 20.'},
+          {q:'A shirt costs $40 and is discounted 30%. What is the sale price?', a:['$28','$12','$30','$32'], correct:0, explanation:'Discount = 0.30 × 40 = $12. Sale price = 40 − 12 = $28.'},
+          {q:'36 is 60% of what number?', a:['60','21.6','216','36'], correct:0, explanation:'36 ÷ 0.60 = 60.'},
+          {q:'A price increased from $50 to $65. What is the percent increase?', a:['30%','15%','25%','13%'], correct:0, explanation:'(65 − 50) / 50 × 100 = 15/50 × 100 = 30%.'},
+          {q:'Convert 0.045 to a percent.', a:['4.5%','0.45%','45%','0.045%'], correct:0, explanation:'Multiply by 100: 0.045 × 100 = 4.5%.'},
+        ]
+      }
+    ]
+  },
+  {
+    id:'geometry', icon:'📏', name:'Geometry Basics', color:'#10b981',
+    desc:'Perimeter, area, angles, and coordinate geometry.',
+    chapters:[
+      { title:'Perimeter & Area', topics:'Formulas for common shapes.',
+        content:`<p><strong>Perimeter</strong> is the total distance around a shape. <strong>Area</strong> is the amount of space inside.</p>
+        <div class="concept-box"><div class="label">KEY FORMULAS</div>
+          <strong>Rectangle:</strong> P = 2l + 2w &nbsp;·&nbsp; A = lw<br>
+          <strong>Triangle:</strong> P = a + b + c &nbsp;·&nbsp; A = ½bh<br>
+          <strong>Circle:</strong> C = 2πr &nbsp;·&nbsp; A = πr² &nbsp; (π ≈ 3.14)
+        </div>
+        <div class="example-box"><div class="label">EXAMPLE — Rectangle: l = 8, w = 5</div>
+          <code class="math-line">P = 2(8) + 2(5) = 16 + 10 = 26 units</code>
+          <code class="math-line">A = 8 × 5 = 40 sq units</code>
+        </div>`,
+        questions:[
+          {q:'A rectangle has length 12 and width 7. What is its area?', a:['84','38','19','56'], correct:0, explanation:'A = l × w = 12 × 7 = 84 square units.'},
+          {q:'A triangle has base 10 and height 6. What is its area?', a:['30','60','15','20'], correct:0, explanation:'A = ½ × b × h = ½ × 10 × 6 = 30 square units.'},
+          {q:'What is the perimeter of a square with side 9?', a:['36','18','81','27'], correct:0, explanation:'A square has 4 equal sides: P = 4 × 9 = 36 units.'},
+          {q:'A circle has radius 5. What is its area? (Use π ≈ 3.14)', a:['78.5','31.4','15.7','25'], correct:0, explanation:'A = πr² = 3.14 × 5² = 3.14 × 25 = 78.5 sq units.'},
+          {q:'What is the circumference of a circle with diameter 10? (π ≈ 3.14)', a:['31.4','62.8','78.5','15.7'], correct:0, explanation:'C = πd = 3.14 × 10 = 31.4 units. (Or C = 2πr = 2 × 3.14 × 5 = 31.4)'},
+        ]
+      },
+      { title:'Angles & Triangles', topics:'Angle types, triangle properties, and the angle sum.',
+        content:`<p>An <strong>angle</strong> is formed by two rays sharing an endpoint (vertex).</p>
+        <div class="concept-box"><div class="label">ANGLE TYPES</div>
+          <strong>Acute:</strong> less than 90° &nbsp;·&nbsp; <strong>Right:</strong> exactly 90° &nbsp;·&nbsp; <strong>Obtuse:</strong> between 90° and 180° &nbsp;·&nbsp; <strong>Straight:</strong> 180°
+        </div>
+        <div class="concept-box"><div class="label">TRIANGLE ANGLE SUM</div>
+          The sum of the three angles in any triangle is always <strong>180°</strong>.
+        </div>
+        <div class="example-box"><div class="label">EXAMPLE</div>
+          <code class="math-line">Angles: 45°, 90°, x°</code>
+          <code class="math-line">45 + 90 + x = 180 → x = 45°</code>
+        </div>`,
+        questions:[
+          {q:'A triangle has angles 60° and 80°. What is the third angle?', a:['40°','20°','50°','100°'], correct:0, explanation:'180 − 60 − 80 = 40°.'},
+          {q:'An angle measures 135°. What type is it?', a:['Obtuse','Acute','Right','Straight'], correct:0, explanation:'135° is between 90° and 180°, so it is obtuse.'},
+          {q:'Two angles are supplementary. One is 65°. What is the other?', a:['115°','25°','90°','35°'], correct:0, explanation:'Supplementary angles sum to 180°. 180 − 65 = 115°.'},
+          {q:'Two angles are complementary. One is 38°. What is the other?', a:['52°','142°','62°','48°'], correct:0, explanation:'Complementary angles sum to 90°. 90 − 38 = 52°.'},
+          {q:'A triangle has all three angles equal. What type is it?', a:['Equilateral','Isosceles','Scalene','Right'], correct:0, explanation:'An equilateral triangle has all three sides and all three angles equal (each is 60°).'},
+        ]
+      }
+    ]
+  },
+  {
+    id:'stats', icon:'📊', name:'Data & Statistics', color:'#ec4899',
+    desc:'Mean, median, mode, range, and reading graphs.',
+    chapters:[
+      { title:'Mean, Median, Mode & Range', topics:'Calculating and interpreting measures of center.',
+        content:`<p>These four values help us summarize a data set:</p>
+        <div class="concept-box"><div class="label">DEFINITIONS</div>
+          <strong>Mean (average):</strong> sum of values ÷ number of values<br>
+          <strong>Median:</strong> the middle value when data is ordered<br>
+          <strong>Mode:</strong> the value that appears most often<br>
+          <strong>Range:</strong> largest value − smallest value
+        </div>
+        <div class="example-box"><div class="label">DATA SET: 3, 7, 7, 9, 14</div>
+          <code class="math-line">Mean: (3+7+7+9+14)÷5 = 40÷5 = 8</code>
+          <code class="math-line">Median: 7 (middle value)</code>
+          <code class="math-line">Mode: 7 (appears twice)</code>
+          <code class="math-line">Range: 14 − 3 = 11</code>
+        </div>`,
+        questions:[
+          {q:'What is the mean of: 4, 8, 6, 10, 2?', a:['6','8','5','7'], correct:0, explanation:'Sum = 4+8+6+10+2 = 30. Mean = 30 ÷ 5 = 6.'},
+          {q:'What is the median of: 3, 5, 7, 9, 11?', a:['7','5','9','6'], correct:0, explanation:'The middle value of 5 ordered numbers is the 3rd one: 7.'},
+          {q:'Data: 2, 4, 4, 6, 8, 4. What is the mode?', a:['4','6','2','8'], correct:0, explanation:'4 appears three times — more than any other value.'},
+          {q:'What is the range of: 15, 3, 22, 8, 11?', a:['19','8','22','15'], correct:0, explanation:'Range = largest − smallest = 22 − 3 = 19.'},
+          {q:'A student scores 70, 80, 90, and 100. What score on the 5th test gives a mean of 85?', a:['85','75','90','95'], correct:0, explanation:'Target sum = 85 × 5 = 425. Current sum = 340. Fifth score = 425 − 340 = 85.'},
+        ]
+      }
+    ]
+  },
+];
+
+// ────────────────────────────────────────
+//  STATE
+// ────────────────────────────────────────
+let state = {
+  studentName: '',
+  progress: {},   // { moduleId_chapterIdx: { completed, score, total } }
+  currentModule: null,
+  currentChapterIdx: null,
+  quiz: { questions:[], current:0, correct:0, answers:[] }
+};
+
+function getKey(mid, cidx) { return `${mid}_${cidx}`; }
+
+function getModuleProgress(mod) {
+  let done=0, total=mod.chapters.length;
+  mod.chapters.forEach((_,i)=>{ if(state.progress[getKey(mod.id,i)]?.completed) done++; });
+  return {done,total};
+}
+
+// ────────────────────────────────────────
+//  SCREENS
+// ────────────────────────────────────────
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ────────────────────────────────────────
+//  INTRO
+// ────────────────────────────────────────
+function startApp() {
+  const n = document.getElementById('student-name').value.trim();
+  state.studentName = n || 'Student';
+  document.getElementById('display-name').textContent = state.studentName;
+  buildModulesGrid();
+  showScreen('modules');
+}
+document.getElementById('student-name').addEventListener('keydown', e=>{ if(e.key==='Enter') startApp(); });
+
+// ────────────────────────────────────────
+//  MODULES
+// ────────────────────────────────────────
+function buildModulesGrid() {
+  const grid = document.getElementById('modules-grid');
+  grid.innerHTML = '';
+  MODULES.forEach(mod => {
+    const {done,total} = getModuleProgress(mod);
+    const pct = total>0 ? Math.round(done/total*100) : 0;
+    const card = document.createElement('div');
+    card.className = 'module-card';
+    card.style.setProperty('--accent-color', mod.color);
+    card.innerHTML = `
+      <div class="module-icon">${mod.icon}</div>
+      <div class="module-num">MODULE ${String(MODULES.indexOf(mod)+1).padStart(2,'0')}</div>
+      <div class="module-name">${mod.name}</div>
+      <div class="module-desc">${mod.desc}</div>
+      <div class="module-progress-bar"><div class="module-progress-fill" style="width:${pct}%;background:${mod.color}"></div></div>
+      <div class="module-progress-label">${done}/${total} chapters complete</div>
+    `;
+    card.onclick = () => openModule(mod);
+    grid.appendChild(card);
+  });
+}
+
+// ────────────────────────────────────────
+//  CHAPTERS
+// ────────────────────────────────────────
+function openModule(mod) {
+  state.currentModule = mod;
+  document.getElementById('chapter-header').innerHTML = `
+    <div class="chapter-icon-big">${mod.icon}</div>
+    <div class="chapter-title-area">
+      <h2>${mod.name}</h2>
+      <p>${mod.desc}</p>
+    </div>
+  `;
+  const list = document.getElementById('chapters-list');
+  list.innerHTML = '';
+  mod.chapters.forEach((ch,i) => {
+    const key = getKey(mod.id,i);
+    const prog = state.progress[key];
+    const completed = prog?.completed;
+    const div = document.createElement('div');
+    div.className = `chapter-item${completed?' completed':''}`;
+    div.innerHTML = `
+      <div class="chapter-num-badge">${completed?'✓':String(i+1).padStart(2,'0')}</div>
+      <div class="chapter-info">
+        <h4>${ch.title}</h4>
+        <p>${ch.topics}</p>
+      </div>
+      <div class="chapter-status">${completed?`✓ ${prog.score}/${prog.total}`:'→ Start'}</div>
+    `;
+    div.onclick = () => openChapter(mod, i);
+    list.appendChild(div);
+  });
+  showScreen('chapters');
+}
+
+// ────────────────────────────────────────
+//  LESSON
+// ────────────────────────────────────────
+function openChapter(mod, idx) {
+  state.currentModule = mod;
+  state.currentChapterIdx = idx;
+  const ch = mod.chapters[idx];
+
+  document.getElementById('lesson-breadcrumb').innerHTML =
+    `${mod.icon} ${mod.name} <span>›</span> Chapter ${idx+1}: ${ch.title}`;
+
+  document.getElementById('lesson-content').innerHTML = `
+    <div class="lesson-card">
+      <div class="lesson-tag">// TUTORIAL</div>
+      <h2>${ch.title}</h2>
+      <div class="lesson-body">${ch.content}</div>
+    </div>
+  `;
+  showScreen('lesson');
+}
+
+// ────────────────────────────────────────
+//  QUIZ
+// ────────────────────────────────────────
+function startQuiz() {
+  const mod = state.currentModule;
+  const ch = mod.chapters[state.currentChapterIdx];
+  state.quiz = { questions: ch.questions, current:0, correct:0, answers:[] };
+  document.getElementById('quiz-chapter-label').textContent = `${mod.icon} ${mod.name} · ${ch.title}`;
+  renderQuestion();
+  showScreen('quiz');
+}
+
+function renderQuestion() {
+  const {questions, current, correct} = state.quiz;
+  const total = questions.length;
+  const q = questions[current];
+
+  document.getElementById('quiz-progress-text').textContent = `Question ${current+1} of ${total}`;
+  document.getElementById('quiz-score-live').textContent = `${correct} / ${current}`;
+  document.getElementById('quiz-progress-fill').style.width = `${(current/total)*100}%`;
+
+  const labels = ['A','B','C','D'];
+  const area = document.getElementById('quiz-question-area');
+  area.innerHTML = `
+    <div class="question-card">
+      <div class="question-num">QUESTION ${String(current+1).padStart(2,'0')}</div>
+      <div class="question-text">${q.q}</div>
+      <div class="answers-grid" id="answers-grid">
+        ${q.a.map((ans,i)=>`
+          <button class="answer-btn" onclick="selectAnswer(${i})">
+            <div class="answer-label">${labels[i]}</div>
+            <span>${ans}</span>
+          </button>
+        `).join('')}
+      </div>
+      <div class="feedback-box" id="feedback"></div>
+    </div>
+    <button class="next-btn" id="next-btn" onclick="nextQuestion()">${current+1<total?'NEXT QUESTION →':'SEE RESULTS →'}</button>
+  `;
+}
+
+function selectAnswer(idx) {
+  const q = state.quiz.questions[state.quiz.current];
+  const btns = document.querySelectorAll('.answer-btn');
+  const feedback = document.getElementById('feedback');
+
+  btns.forEach(b=>b.disabled=true);
+  state.quiz.answers.push(idx);
+
+  if(idx === q.correct) {
+    btns[idx].classList.add('correct');
+    state.quiz.correct++;
+    feedback.className='feedback-box correct show';
+    feedback.textContent = '✓ Correct! ' + q.explanation;
+  } else {
+    btns[idx].classList.add('wrong');
+    btns[q.correct].classList.add('correct');
+    feedback.className='feedback-box wrong show';
+    feedback.textContent = '✗ Not quite. ' + q.explanation;
+  }
+
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.classList.add('show');
+  document.getElementById('quiz-score-live').textContent = `${state.quiz.correct} / ${state.quiz.current+1}`;
+}
+
+function nextQuestion() {
+  state.quiz.current++;
+  if(state.quiz.current >= state.quiz.questions.length) {
+    finishQuiz();
+  } else {
+    renderQuestion();
+  }
+}
+
+// ────────────────────────────────────────
+//  RESULTS
+// ────────────────────────────────────────
+function finishQuiz() {
+  const {correct, questions} = state.quiz;
+  const total = questions.length;
+  const pct = Math.round(correct/total*100);
+  const mod = state.currentModule;
+  const chIdx = state.currentChapterIdx;
+  const ch = mod.chapters[chIdx];
+
+  const key = getKey(mod.id, chIdx);
+  const prev = state.progress[key];
+  if(!prev || pct > (prev.score/prev.total*100)) {
+    state.progress[key] = { completed:true, score:correct, total };
+  }
+  buildModulesGrid();
+
+  const grade = pct>=90?'A':pct>=80?'B':pct>=70?'C':pct>=60?'D':'F';
+  const msg = pct>=90?'Outstanding! 🌟':pct>=70?'Well done! 👍':pct>=50?'Good effort. Keep practicing! 💪':'Review the lesson and try again. 📖';
+
+  const rc = document.getElementById('results-content');
+  rc.innerHTML = `
+    <div class="score-ring">
+      <div class="score-pct">${pct}%</div>
+      <div class="score-label">SCORE</div>
+    </div>
+    <div class="results-title">${grade === 'A' || grade === 'B' ? 'Chapter Complete!' : 'Quiz Done'}</div>
+    <p class="results-sub">${msg}</p>
+    <div class="results-card">
+      <div class="results-stat"><span class="key">Chapter</span><span class="val">${ch.title}</span></div>
+      <div class="results-stat"><span class="key">Correct Answers</span><span class="val good">${correct}</span></div>
+      <div class="results-stat"><span class="key">Incorrect</span><span class="val ${total-correct>0?'bad':''}">${total-correct}</span></div>
+      <div class="results-stat"><span class="key">Score</span><span class="val" style="color:${pct>=70?'var(--success)':'var(--danger)'}">${pct}%</span></div>
+      <div class="results-stat"><span class="key">Grade</span><span class="val"><span class="grade-badge grade-${grade}">${grade}</span></span></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-secondary" onclick="openChapter(state.currentModule, state.currentChapterIdx)">↺ REVIEW LESSON</button>
+      <button class="btn-secondary" onclick="startQuiz()">↺ RETRY QUIZ</button>
+      <button class="btn-primary" style="width:auto" onclick="openModule(state.currentModule)">NEXT CHAPTER →</button>
+    </div>
+  `;
+  showScreen('results');
+}
+
+// ────────────────────────────────────────
+//  REPORT CARD
+// ────────────────────────────────────────
+function showReport() {
+  document.getElementById('report-student-name').textContent = state.studentName;
+  let html = `<table class="report-table">
+    <thead><tr><th>Module</th><th>Chapter</th><th>Score</th><th>Grade</th></tr></thead><tbody>`;
+
+  let anyData = false;
+  MODULES.forEach(mod=>{
+    mod.chapters.forEach((ch,i)=>{
+      const k = getKey(mod.id,i);
+      const p = state.progress[k];
+      if(p) {
+        anyData = true;
+        const pct = Math.round(p.score/p.total*100);
+        const grade = pct>=90?'A':pct>=80?'B':pct>=70?'C':pct>=60?'D':'F';
+        html += `<tr>
+          <td>${mod.icon} ${mod.name}</td>
+          <td>${ch.title}</td>
+          <td>${p.score}/${p.total} (${pct}%)</td>
+          <td><span class="grade-badge grade-${grade}">${grade}</span></td>
+        </tr>`;
+      }
+    });
+  });
+
+  if(!anyData) {
+    html += `<tr><td colspan="4" style="color:var(--muted);text-align:center;padding:2rem">No quizzes completed yet. Complete chapters to see your grades here.</td></tr>`;
+  }
+
+  html += '</tbody></table>';
+  document.getElementById('report-content').innerHTML = html;
+  showScreen('report');
+}
+
+// ────────────────────────────────────────
+//  TOAST
+// ────────────────────────────────────────
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2500);
+}
+
+document.addEventListener('keydown', e => {
+  if(e.key==='Enter' && document.getElementById('screen-intro').classList.contains('active'))
+    startApp();
+});
+</script>
+</body>
+</html>
